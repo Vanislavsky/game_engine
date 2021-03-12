@@ -143,11 +143,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mat2.cpp" />
+    <ClCompile Include="mat3.cpp" />
     <ClCompile Include="vec2.cpp" />
     <ClCompile Include="vec3.cpp" />
     <ClCompile Include="vec4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mat2.h" />
+    <ClInclude Include="mat3.h" />
     <ClInclude Include="vec2.h" />
     <ClInclude Include="vec3.h" />
     <ClInclude Include="vec4.h" />

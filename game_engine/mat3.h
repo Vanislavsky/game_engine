@@ -1,0 +1,40 @@
+#pragma once
+#pragma once
+
+#include<vector>
+#include"vec2.h"
+
+class mat3
+{
+public:
+	mat3();
+	mat3(float);
+	mat3(float, float, float, float, float, float, float, float, float);
+	mat3(const mat3&);
+
+	float get_value(int, int);
+	void set_value(float,int, int);
+
+	mat3 operator+(const mat3&);
+	mat3 operator-(const mat3&);
+	mat3 operator*(const mat3&);
+	mat3 operator*(float);
+	mat3 operator*(const vec2&);
+	mat3 operator/(float);
+
+	float determinant();
+	mat3 transposed_mat2();
+	mat3 algebraic_additions_mat2();
+	mat3 reverse_mat2();
+
+	bool operator==(mat3);
+	bool operator!=(mat3);
+
+private:
+	std::vector<std::vector<float>> data;
+};
+
+
+mat3 unit_mat3();
+
+
