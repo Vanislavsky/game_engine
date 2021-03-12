@@ -23,7 +23,7 @@ public:
 
 	bool operator==(const vec2&);
 	bool operator!=(const vec2&);
-private:
+protected:
 	float a1;
 	float a2;
 };

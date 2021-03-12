@@ -1,5 +1,6 @@
 #pragma once
 
+
 class vec3
 {
 public:
