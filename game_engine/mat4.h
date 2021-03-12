@@ -36,5 +36,7 @@ private:
 
 
 mat4 unit_mat4();
+mat4 offset_matrix(float, float, float);
+mat4 zoom_matrix(float, float, float);
 
 

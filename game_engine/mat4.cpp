@@ -164,3 +164,22 @@ bool mat4::operator!=(mat4 _mat) {
 mat4 unit_mat4() {
 	return { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
 }
+
+mat4 offset_matrix(float x, float y, float z) {
+	mat4 off_mat4;
+	off_mat4.set_value(1,1,1);
+	off_mat4.set_value(1, 2, 2);
+	off_mat4.set_value(1, 3, 3);
+	off_mat4.set_value(1, 4, 4);
+	off_mat4.set_value(x, 1, 4);
+	off_mat4.set_value(y, 2, 4);
+	off_mat4.set_value(z, 3, 4);
+}
+
+mat4 zoom_matrix(float s1, float s2, float s3) {
+	mat4 off_mat4;
+	off_mat4.set_value(s1, 1, 1);
+	off_mat4.set_value(s2, 2, 2);
+	off_mat4.set_value(s3, 3, 3);
+	off_mat4.set_value(1, 4, 4);
+}
