@@ -3,6 +3,7 @@
 
 #include<vector>
 #include"vec2.h"
+#include"vec3.h"
 
 class mat4
 {
@@ -38,5 +39,6 @@ private:
 mat4 unit_mat4();
 mat4 offset_matrix(float, float, float);
 mat4 zoom_matrix(float, float, float);
+mat4 rotate_matrix(float, const vec3&);
 
 
