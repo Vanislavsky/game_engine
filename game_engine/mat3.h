@@ -9,7 +9,7 @@ class mat3
 public:
 	mat3();
 	mat3(float);
-	mat3(vector<float>);
+	mat3(const vector<float>&);
 	mat3(const mat3&);
 
 	float get_value(int, int);
@@ -23,12 +23,13 @@ public:
 	mat3 operator/(float);
 
 	float determinant();
-	mat3 transposed_mat2();
-	mat3 algebraic_additions_mat2();
-	mat3 reverse_mat2();
+	mat3 transposed_mat3();
+	float algebraic_addition(int, int);
+	mat3 algebraic_additions_mat3();
+	mat3 reverse_mat3();
 
-	bool operator==(mat3);
-	bool operator!=(mat3);
+	bool operator==(const mat3&);
+	bool operator!=(const mat3&);
 
 private:
 	std::vector<std::vector<float>> data;
@@ -36,5 +37,3 @@ private:
 
 
 mat3 unit_mat3();
-
-

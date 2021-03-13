@@ -19,7 +19,7 @@ mat4::mat4(float el) {
 	}
 }
 
-mat4::mat4(vector<float> _data) {
+mat4::mat4(const vector<float>& _data) {
 	data.resize(4);
 	for (int i = 0; i < 4; i++)
 		data[i].resize(4);

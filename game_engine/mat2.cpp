@@ -19,7 +19,7 @@ mat2::mat2(float el) {
 	}
 }
 
-mat2::mat2(vector<float> _data) {
+mat2::mat2(const vector<float>& _data) {
 	data.resize(2);
 	for (int i = 0; i < 2; i++)
 		data[i].resize(2);

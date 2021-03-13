@@ -1,4 +1,6 @@
 #include "mat3.h"
+#include "mat2.h"
+#include<cmath>
 
 mat3::mat3() {
 	data.resize(3);
@@ -18,7 +20,7 @@ mat3::mat3(float el) {
 	}
 }
 
-mat3::mat3(vector<float> _data) {
+mat3::mat3(const vector<float>& _data) {
 	data.resize(3);
 	for (int i = 0; i < 3; i++)
 		data[i].resize(3);
@@ -129,7 +131,7 @@ float mat3::determinant() {
 	return det + rev_det;
 }
 
-mat3 mat3::transposed_mat2() {
+mat3 mat3::transposed_mat3() {
 	mat3 res_mat = *this;
 
 	float temp;
@@ -143,15 +145,38 @@ mat3 mat3::transposed_mat2() {
 	return res_mat;
 }
 
-//mat3 mat3::algebraic_additions_mat2() {
-	//return { data[1][1], -data[0][1], -data[1][0], data[1][1] };
-//}
+float mat3::algebraic_addition(int row_index, int col_index) {
+	mat2 minor_mat;
+	int r = 0;
+	int c = 0;
+	for (int i = 0; i < 3; i++) {
+		if (i == row_index)
+			break;
+		for (int j = 0; j < 3; j++) {
+			if (j == col_index)
+				break;
+			minor_mat[r][c] = data[i][j];
+			c++;
+			if (c == 3) {
+				c = 0;
+				r++;
+			}
+		}
+	}
 
-//mat3 mat3::reverse_mat3() {
-	//return  algebraic_additions_mat3().transposed_mat3() * (1 / determinant());
-//}
+	return minor_mat.determinant() * pow(-1, row_index + col_index);
+}
 
-bool mat3::operator==(mat3 _mat) {
+mat3 mat3::algebraic_additions_mat3() {
+	return { algebraic_addition(0, 0), algebraic_addition(0, 1), algebraic_addition(0, 2), algebraic_addition(1,0),
+				algebraic_addition(1, 1), algebraic_addition(1, 2), algebraic_addition(2, 0), algebraic_addition(2, 1), algebraic_addition(2, 2) };
+}
+
+mat3 mat3::reverse_mat3() {
+	return  algebraic_additions_mat3().transposed_mat3() * (1 / determinant());
+}
+
+bool mat3::operator==(const mat3& _mat) {
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			if (data[i][j] != _mat.data[i][j]) {
@@ -162,7 +187,7 @@ bool mat3::operator==(mat3 _mat) {
 
 	return true;
 }
-bool mat3::operator!=(mat3 _mat) {
+bool mat3::operator!=(const mat3& _mat) {
 	return !(*this == _mat);
 }
 
