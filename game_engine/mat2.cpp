@@ -7,23 +7,33 @@ mat2::mat2() {
 		data[i].resize(2);
 }
 
-mat2::mat2(float a11) {
+mat2::mat2(float el) {
 	data.resize(2);
 	for (int i = 0; i < 2; i++)
 		data[i].resize(2);
 
-	data[0][0] = a11;
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 2; j++) {
+			data[i][j] = el;
+		}
+	}
 }
 
-mat2::mat2(float a11, float a12, float a21, float a22) {
+mat2::mat2(vector<float> _data) {
 	data.resize(2);
 	for (int i = 0; i < 2; i++)
 		data[i].resize(2);
 
-	data[0][0] = a11;
-	data[0][1] = a12;
-	data[1][0] = a21;
-	data[1][1] = a22;
+	int i = 0;
+	int j = 0;
+	for (auto it = _data.begin(); it != _data.end(); it++) {
+		data[i][j] = *_data;
+		j++;
+		if (j > 2) {
+			i++;
+			j = 0;
+		}
+	}
 }
 
 mat2::mat2(const mat2& _mat) {

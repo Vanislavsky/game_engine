@@ -6,28 +6,33 @@ mat3::mat3() {
 		data[i].resize(3);
 }
 
-mat3::mat3(float a11) {
+mat3::mat3(float el) {
 	data.resize(3);
 	for (int i = 0; i < 3; i++)
 		data[i].resize(3);
 
-	data[0][0] = a11;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			data[i][j] = el;
+		}
+	}
 }
 
-mat3::mat3(float a11, float a12, float a13, float a21, float a22, float a23, float a31, float a32, float a33) {
+mat3::mat3(vector<float> _data) {
 	data.resize(3);
 	for (int i = 0; i < 3; i++)
 		data[i].resize(3);
 
-	data[0][0] = a11;
-	data[0][1] = a12;
-	data[0][2] = a13;
-	data[1][0] = a21;
-	data[1][1] = a22;
-	data[1][2] = a23;
-	data[2][0] = a31;
-	data[2][1] = a32;
-	data[2][2] = a33;
+	int i = 0;
+	int j = 0;
+	for (auto it = _data.begin(); it != _data.end(); it++) {
+		data[i][j] = *_data;
+		j++;
+		if (j > 3) {
+			i++;
+			j = 0;
+		}
+	}
 }
 
 mat3::mat3(const mat3& _mat) {

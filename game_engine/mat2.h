@@ -8,7 +8,7 @@ class mat2
 public:
 	mat2();
 	mat2(float);
-	mat2(float, float, float, float);
+	mat2(vector<float>);
 	mat2(const mat2&);
 
 	float get_value(int, int);

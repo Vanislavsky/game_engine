@@ -10,7 +10,7 @@ class mat4
 public:
 	mat4();
 	mat4(float);
-	mat4(float, float, float, float, float, float, float, float, float);
+	mat4(vector<float>);
 	mat4(const mat4&);
 
 	float get_value(int, int);

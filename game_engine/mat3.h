@@ -9,7 +9,7 @@ class mat3
 public:
 	mat3();
 	mat3(float);
-	mat3(float, float, float, float, float, float, float, float, float);
+	mat3(vector<float>);
 	mat3(const mat3&);
 
 	float get_value(int, int);

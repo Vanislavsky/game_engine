@@ -7,28 +7,33 @@ mat4::mat4() {
 		data[i].resize(4);
 }
 
-mat4::mat4(float a11) {
+mat4::mat4(float el) {
 	data.resize(4);
 	for (int i = 0; i < 4; i++)
 		data[i].resize(4);
 
-	data[0][0] = a11;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			data[i][j] = el;
+		}
+	}
 }
 
-mat4::mat4(float a11, float a12, float a13, float a21, float a22, float a23, float a31, float a32, float a33) {
+mat4::mat4(vector<float> _data) {
 	data.resize(4);
 	for (int i = 0; i < 4; i++)
 		data[i].resize(4);
-
-	data[0][0] = a11;
-	data[0][1] = a12;
-	data[0][2] = a13;
-	data[1][0] = a21;
-	data[1][1] = a22;
-	data[1][2] = a23;
-	data[2][0] = a31;
-	data[2][1] = a32;
-	data[2][2] = a33;
+	
+	int i = 0;
+	int j = 0;
+	for (auto it = _data.begin(); it != _data.end(); it++) {
+		data[i][j] = *_data;
+		j++;
+		if (j > 4) {
+			i++;
+			j = 0;
+		}
+	}
 }
 
 mat4::mat4(const mat4& _mat) {
@@ -180,10 +185,10 @@ mat4 offset_matrix(float x, float y, float z) {
 
 mat4 zoom_matrix(float s1, float s2, float s3) {
 	mat4 zoom_mat4;
-	off_mat4.set_value(s1, 1, 1);
-	off_mat4.set_value(s2, 2, 2);
-	off_mat4.set_value(s3, 3, 3);
-	off_mat4.set_value(1, 4, 4);
+	zoom_mat4.set_value(s1, 1, 1);
+	zoom_mat4.set_value(s2, 2, 2);
+	zoom_mat4.set_value(s3, 3, 3);
+	zoom_mat4.set_value(1, 4, 4);
 	return zoom_mat4;
 }
 
