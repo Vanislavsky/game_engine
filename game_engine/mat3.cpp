@@ -20,7 +20,7 @@ mat3::mat3(float el) {
 	}
 }
 
-mat3::mat3(const vector<float>& _data) {
+mat3::mat3(const std::vector<float>& _data) {
 	data.resize(3);
 	for (int i = 0; i < 3; i++)
 		data[i].resize(3);
@@ -28,7 +28,7 @@ mat3::mat3(const vector<float>& _data) {
 	int i = 0;
 	int j = 0;
 	for (auto it = _data.begin(); it != _data.end(); it++) {
-		data[i][j] = *_data;
+		data[i][j] = *it;
 		j++;
 		if (j > 3) {
 			i++;
@@ -108,10 +108,12 @@ mat3 mat3::operator*(float value) {
 	return res_mat;
 }
 
-mat3 mat3::operator*(const vec2& _vec) {
-	mat3 res_mat;
+vec3 mat3::operator*(vec3& _vec) {
+	float temp_a1 = data[0][0] * _vec.get_a1() + data[0][1] * _vec.get_a2() + data[0][2] * _vec.get_a3();
+	float temp_a2 = data[1][0] * _vec.get_a1() + data[1][1] * _vec.get_a2() + data[1][2] * _vec.get_a3();
+	float temp_a3 = data[2][0] * _vec.get_a1() + data[2][1] * _vec.get_a2() + data[2][2] * _vec.get_a3();
 
-	return res_mat;
+	return { temp_a1, temp_a2, temp_a3 };
 }
 
 mat3 mat3::operator/(float value) {
@@ -155,7 +157,7 @@ float mat3::algebraic_addition(int row_index, int col_index) {
 		for (int j = 0; j < 3; j++) {
 			if (j == col_index)
 				break;
-			minor_mat[r][c] = data[i][j];
+			minor_mat.set_value(data[i][j], r, c);
 			c++;
 			if (c == 3) {
 				c = 0;
@@ -168,8 +170,9 @@ float mat3::algebraic_addition(int row_index, int col_index) {
 }
 
 mat3 mat3::algebraic_additions_mat3() {
-	return { algebraic_addition(0, 0), algebraic_addition(0, 1), algebraic_addition(0, 2), algebraic_addition(1,0),
+	std::vector<float> algebraic_additions_vector{ algebraic_addition(0, 0), algebraic_addition(0, 1), algebraic_addition(0, 2), algebraic_addition(1,0),
 				algebraic_addition(1, 1), algebraic_addition(1, 2), algebraic_addition(2, 0), algebraic_addition(2, 1), algebraic_addition(2, 2) };
+	return { algebraic_additions_vector };
 }
 
 mat3 mat3::reverse_mat3() {
@@ -192,5 +195,9 @@ bool mat3::operator!=(const mat3& _mat) {
 }
 
 mat3 unit_mat3() {
-	return { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+	mat3 unit_mat3;
+	unit_mat3.set_value(1, 0, 0);
+	unit_mat3.set_value(1, 1, 1);
+	unit_mat3.set_value(1, 2, 2);
+	return unit_mat3;
 }

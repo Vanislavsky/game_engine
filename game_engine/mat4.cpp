@@ -1,5 +1,7 @@
 #include "mat4.h"
+#include "mat3.h"
 #include<cmath>
+#include<vector>
 
 mat4::mat4() {
 	data.resize(4);
@@ -19,7 +21,7 @@ mat4::mat4(float el) {
 	}
 }
 
-mat4::mat4(const vector<float>& _data) {
+mat4::mat4(const std::vector<float>& _data) {
 	data.resize(4);
 	for (int i = 0; i < 4; i++)
 		data[i].resize(4);
@@ -27,7 +29,7 @@ mat4::mat4(const vector<float>& _data) {
 	int i = 0;
 	int j = 0;
 	for (auto it = _data.begin(); it != _data.end(); it++) {
-		data[i][j] = *_data;
+		data[i][j] = *it;
 		j++;
 		if (j > 4) {
 			i++;
@@ -107,10 +109,13 @@ mat4 mat4::operator*(float value) {
 	return res_mat;
 }
 
-mat4 mat4::operator*(const vec2& _vec) {
-	mat4 res_mat;
+vec4 mat4::operator*(vec4& _vec) {
+	float temp_a1 = data[0][0] * _vec.get_a1() + data[0][1] * _vec.get_a2() + data[0][2] * _vec.get_a3() + data[0][3] * _vec.get_a4();
+	float temp_a2 = data[1][0] * _vec.get_a1() + data[1][1] * _vec.get_a2() + data[1][2] * _vec.get_a3() + data[1][3] * _vec.get_a4();
+	float temp_a3 = data[2][0] * _vec.get_a1() + data[2][1] * _vec.get_a2() + data[2][2] * _vec.get_a3() + data[2][3] * _vec.get_a4();
+	float temp_a4 = data[3][0] * _vec.get_a1() + data[3][1] * _vec.get_a2() + data[3][2] * _vec.get_a3() + data[3][3] * _vec.get_a4();
 
-	return res_mat;
+	return { temp_a1, temp_a2, temp_a3, temp_a4 };
 }
 
 mat4 mat4::operator/(float value) {
@@ -130,7 +135,7 @@ float mat4::determinant() {
 	return det + rev_det;
 }
 
-mat4 mat4::transposed_mat2() {
+mat4 mat4::transposed_mat4() {
 	mat4 res_mat = *this;
 
 	float temp;
@@ -144,13 +149,39 @@ mat4 mat4::transposed_mat2() {
 	return res_mat;
 }
 
-//mat3 mat3::algebraic_additions_mat2() {
-	//return { data[1][1], -data[0][1], -data[1][0], data[1][1] };
-//}
+float mat4::algebraic_addition(int row_index, int col_index) {
+	mat3 minor_mat;
+	int r = 0;
+	int c = 0;
+	for (int i = 0; i < 3; i++) {
+		if (i == row_index)
+			break;
+		for (int j = 0; j < 3; j++) {
+			if (j == col_index)
+				break;
+			minor_mat.set_value(data[i][j], r, c);
+			c++;
+			if (c == 3) {
+				c = 0;
+				r++;
+			}
+		}
+	}
 
-//mat3 mat3::reverse_mat3() {
-	//return  algebraic_additions_mat3().transposed_mat3() * (1 / determinant());
-//}
+	return minor_mat.determinant() * pow(-1, row_index + col_index);
+}
+
+mat4 mat4::algebraic_additions_mat4() {
+	std::vector<float> algebraic_additions_vector{ algebraic_addition(0, 0), algebraic_addition(0, 1), algebraic_addition(0, 2), algebraic_addition(0, 3),
+					algebraic_addition(1, 0), algebraic_addition(1, 1), algebraic_addition(1, 2), algebraic_addition(1, 3), algebraic_addition(2, 0),
+					algebraic_addition(2, 1), algebraic_addition(2, 2), algebraic_addition(2, 3), algebraic_addition(3, 0),
+					algebraic_addition(3, 1), algebraic_addition(3, 2), algebraic_addition(3, 3)};
+	return { algebraic_additions_vector };
+}
+
+mat4 mat4::reverse_mat4() {
+	return  algebraic_additions_mat4().transposed_mat4() * (1 / determinant());
+}
 
 bool mat4::operator==(mat4 _mat) {
 	for (int i = 0; i < 4; i++) {
@@ -168,7 +199,12 @@ bool mat4::operator!=(mat4 _mat) {
 }
 
 mat4 unit_mat4() {
-	return { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+	mat4 unit_mat4;
+	unit_mat4.set_value(1, 0, 0);
+	unit_mat4.set_value(1, 1, 1);
+	unit_mat4.set_value(1, 2, 2);
+	unit_mat4.set_value(1, 3, 3);
+	return unit_mat4;
 }
 
 mat4 offset_matrix(float x, float y, float z) {
@@ -192,7 +228,7 @@ mat4 zoom_matrix(float s1, float s2, float s3) {
 	return zoom_mat4;
 }
 
-mat4 rotate_matrix(float angle, const vec3& arbitrary_axis) {
+mat4 rotate_matrix(float angle, vec3& arbitrary_axis) {
 	mat4 rotate_mat4;
 	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a1(), 2) * (1 - cos(angle)), 1, 1);
 	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a2() * (1 - cos(angle)) - arbitrary_axis.get_a3() * sin(angle), 1, 2);

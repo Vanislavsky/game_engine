@@ -8,7 +8,7 @@ class mat2
 public:
 	mat2();
 	mat2(float);
-	mat2(const vector<float>&);
+	mat2(const std::vector<float>&);
 	mat2(const mat2&);
 
 	float get_value(int, int);
@@ -18,7 +18,7 @@ public:
 	mat2 operator-(const mat2&);
 	mat2 operator*(const mat2&);
 	mat2 operator*(float);
-	mat2 operator*(const vec2&);
+	vec2 operator*(vec2&);
 	mat2 operator/(float);
 
 	float determinant();

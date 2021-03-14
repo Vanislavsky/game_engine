@@ -19,7 +19,7 @@ mat2::mat2(float el) {
 	}
 }
 
-mat2::mat2(const vector<float>& _data) {
+mat2::mat2(const std::vector<float>& _data) {
 	data.resize(2);
 	for (int i = 0; i < 2; i++)
 		data[i].resize(2);
@@ -27,7 +27,7 @@ mat2::mat2(const vector<float>& _data) {
 	int i = 0;
 	int j = 0;
 	for (auto it = _data.begin(); it != _data.end(); it++) {
-		data[i][j] = *_data;
+		data[i][j] = *it;
 		j++;
 		if (j > 2) {
 			i++;
@@ -96,6 +96,13 @@ mat2 mat2::operator*(const mat2& _mat) {
 	return res_mat;
 }
 
+vec2 mat2::operator*(vec2& _vec) {
+	float temp_a1 = data[0][0] * _vec.get_a1() + data[0][1] * _vec.get_a2();
+	float temp_a2 = data[1][0] * _vec.get_a1() + data[1][1] * _vec.get_a2();
+	
+	return { temp_a1, temp_a2 };
+}
+
 mat2 mat2::operator*(float value) {
 	mat2 res_mat;
 	for (int i = 0; i < 2; i++) {
@@ -104,12 +111,6 @@ mat2 mat2::operator*(float value) {
 		}
 	}
 
-	return res_mat;
-}
-
-mat2 mat2::operator*(const vec2& _vec) {
-	mat2 res_mat;
-	
 	return res_mat;
 }
 
@@ -129,11 +130,13 @@ float mat2::determinant() {
 }
 
 mat2 mat2::transposed_mat2() {
-	return { data[0][0], data[1][0], data[0][1], data[1][1] };
+	std::vector<float> transposed_vector{ data[0][0], data[1][0], data[0][1], data[1][1] };
+	return { transposed_vector };
 }
 
 mat2 mat2::algebraic_additions_mat2() {
-	return { data[1][1], -data[0][1], -data[1][0], data[1][1] };
+	std::vector<float> algebraic_additions_vector{ data[1][1], -data[0][1], -data[1][0], data[1][1] };
+	return { algebraic_additions_vector };
 }
 
 mat2 mat2::reverse_mat2() {
@@ -156,5 +159,8 @@ bool mat2::operator!=(mat2 _mat) {
 }
 
 mat2 unit_mat2() {
-	return { 1, 0, 0, 1 };
+	mat2 unit_mat;
+	unit_mat.set_value(1, 0, 0);
+	unit_mat.set_value(1, 1, 1);
+	return unit_mat;
 }

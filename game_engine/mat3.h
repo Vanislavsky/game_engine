@@ -2,14 +2,14 @@
 #pragma once
 
 #include<vector>
-#include"vec2.h"
+#include"vec3.h"
 
 class mat3
 {
 public:
 	mat3();
 	mat3(float);
-	mat3(const vector<float>&);
+	mat3(const std::vector<float>&);
 	mat3(const mat3&);
 
 	float get_value(int, int);
@@ -19,7 +19,7 @@ public:
 	mat3 operator-(const mat3&);
 	mat3 operator*(const mat3&);
 	mat3 operator*(float);
-	mat3 operator*(const vec2&);
+	vec3 operator*(vec3&);
 	mat3 operator/(float);
 
 	float determinant();

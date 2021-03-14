@@ -4,13 +4,14 @@
 #include<vector>
 #include"vec2.h"
 #include"vec3.h"
+#include"vec4.h"
 
 class mat4
 {
 public:
 	mat4();
 	mat4(float);
-	mat4(const vector<float>&);
+	mat4(const std::vector<float>&);
 	mat4(const mat4&);
 
 	float get_value(int, int);
@@ -20,13 +21,14 @@ public:
 	mat4 operator-(const mat4&);
 	mat4 operator*(const mat4&);
 	mat4 operator*(float);
-	mat4 operator*(const vec2&);
+	vec4 operator*(vec4&);
 	mat4 operator/(float);
 
 	float determinant();
-	mat4 transposed_mat2();
-	mat4 algebraic_additions_mat2();
-	mat4 reverse_mat2();
+	mat4 transposed_mat4();
+	float algebraic_addition(int, int);
+	mat4 algebraic_additions_mat4();
+	mat4 reverse_mat4();
 
 	bool operator==(mat4);
 	bool operator!=(mat4);
