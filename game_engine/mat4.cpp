@@ -31,7 +31,7 @@ mat4::mat4(const std::vector<float>& _data) {
 	for (auto it = _data.begin(); it != _data.end(); it++) {
 		data[i][j] = *it;
 		j++;
-		if (j > 4) {
+		if (j == 4) {
 			i++;
 			j = 0;
 		}
@@ -243,4 +243,52 @@ mat4 rotate_matrix(float angle, vec3& arbitrary_axis) {
 
 	return rotate_mat4;
 
+}
+
+
+mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& up) {
+	vec3 camera_target = vec3(0.0f, 0.0f, 0.0f);
+	vec3 camera_direction = (camera_position - camera_target).normal();
+	vec3 camera_right = up.vector_product(camera_direction).normal();
+
+	mat4 first_mat;
+	first_mat.set_value(camera_right.get_a1(), 0, 0);
+	first_mat.set_value(camera_right.get_a2(), 0, 1);
+	first_mat.set_value(camera_right.get_a3(), 0, 2);
+	first_mat.set_value(0, 0, 3);
+	first_mat.set_value(up.get_a1(), 1, 0);
+	first_mat.set_value(up.get_a2(), 1, 1);
+	first_mat.set_value(up.get_a3(), 1, 2);
+	first_mat.set_value(0, 1, 3);
+	first_mat.set_value(camera_direction.get_a1(), 2, 0);
+	first_mat.set_value(camera_direction.get_a2(), 2, 1);
+	first_mat.set_value(camera_direction.get_a3(), 2, 2);
+	first_mat.set_value(0, 2, 3);
+	first_mat.set_value(0, 3, 0);
+	first_mat.set_value(0, 3, 1);
+	first_mat.set_value(0, 3, 2);
+	first_mat.set_value(0, 3, 3);
+
+	mat4 second_mat;
+
+	second_mat.set_value(1, 0, 0);
+	second_mat.set_value(1, 1, 1);
+	second_mat.set_value(1, 2, 2);
+	second_mat.set_value(1, 3, 3);
+	second_mat.set_value(-camera_position.get_a1(), 0, 3);
+	second_mat.set_value(-camera_position.get_a2(), 1, 3);
+	second_mat.set_value(-camera_position.get_a3(), 2, 3);
+
+	return first_mat * second_mat;
+}
+
+mat4 perspective(float fow, float ratio, float near, float far) {
+	mat4 perspective_mat;
+	perspective_mat.set_value(1/(ratio * tan(fow/2)), 0, 0);
+	perspective_mat.set_value(1 / (tan(fow / 2)), 1, 1);
+	perspective_mat.set_value((-near - far) / (near - far), 2, 2);
+	perspective_mat.set_value((2 * far * near) / (near - far), 2, 3);
+	perspective_mat.set_value(1, 3, 2);
+
+	return perspective_mat;
 }

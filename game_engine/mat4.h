@@ -43,4 +43,7 @@ mat4 offset_matrix(float, float, float);
 mat4 zoom_matrix(float, float, float);
 mat4 rotate_matrix(float, const vec3&);
 
+mat4 look_at(vec3&, vec3&, vec3&);
+mat4 perspective(float, float, float, float);
+
 

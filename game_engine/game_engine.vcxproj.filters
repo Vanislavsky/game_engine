@@ -42,6 +42,9 @@
     <ClCompile Include="test.cpp">
       <Filter>math</Filter>
     </ClCompile>
+    <ClCompile Include="math_test.cpp">
+      <Filter>math\Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vec2.h">

@@ -30,7 +30,7 @@ mat3::mat3(const std::vector<float>& _data) {
 	for (auto it = _data.begin(); it != _data.end(); it++) {
 		data[i][j] = *it;
 		j++;
-		if (j > 3) {
+		if (j == 3) {
 			i++;
 			j = 0;
 		}
