@@ -16,8 +16,8 @@ mat4::mat4(float el) {
 	for (int i = 0; i < 4; i++)
 		data[i].resize(4);
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
 			data[i][j] = el;
 		}
 	}
@@ -41,12 +41,12 @@ mat4::mat4(const std::vector<float>& _data) {
 }
 
 mat4::mat4(const mat4& _mat) {
-	data.resize(3);
-	for (int i = 0; i < 3; i++)
-		data[i].resize(3);
+	data.resize(4);
+	for (int i = 0; i < 4; i++)
+		data[i].resize(4);
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
 			data[i][j] = _mat.data[i][j];
 		}
 	}
@@ -155,15 +155,15 @@ float mat4::algebraic_addition(int row_index, int col_index) {
 	mat3 minor_mat;
 	int r = 0;
 	int c = 0;
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 		if (i == row_index)
 			break;
-		for (int j = 0; j < 3; j++) {
+		for (int j = 0; j < 4; j++) {
 			if (j == col_index)
 				break;
 			minor_mat.set_value(data[i][j], r, c);
 			c++;
-			if (c == 3) {
+			if (c == 4) {
 				c = 0;
 				r++;
 			}
@@ -233,46 +233,43 @@ vec4 scale(vec4& _vec, vec3& scale_vec) {
 vec4 rotate(vec4& _vec, float angle, vec3& arbitrary_axis) {
 	mat4 rotate_mat4;
 
-	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a1(), 2) * (1 - cos(angle)), 0, 0);
-	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a2() * (1 - cos(angle)) - arbitrary_axis.get_a3() * sin(angle), 0, 1);
-	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a3() * (1 - cos(angle)) + arbitrary_axis.get_a2() * sin(angle), 0, 2);
-	rotate_mat4.set_value(arbitrary_axis.get_a2() * arbitrary_axis.get_a1() * (1 - cos(angle)) + arbitrary_axis.get_a3() * sin(angle), 1, 0);
-	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a2(), 2) * (1 - cos(angle)), 1, 1);
-	rotate_mat4.set_value(arbitrary_axis.get_a2() * arbitrary_axis.get_a3() * (1 - cos(angle)) - arbitrary_axis.get_a1() * sin(angle), 1, 2);
-	rotate_mat4.set_value(arbitrary_axis.get_a3() * arbitrary_axis.get_a1() * (1 - cos(angle)) - arbitrary_axis.get_a2() * sin(angle), 2, 0);
-	rotate_mat4.set_value(arbitrary_axis.get_a3() * arbitrary_axis.get_a2() * (1 - cos(angle)) + arbitrary_axis.get_a1() * sin(angle), 2, 1);
-	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a3(), 2) * (1 - cos(angle)), 2, 2);
+	auto c = (1 - cos(angle));
+	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a1(), 2) * c, 0, 0);
+	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a2() * c - arbitrary_axis.get_a3() * sin(angle), 0, 1);
+	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a3() * c + arbitrary_axis.get_a2() * sin(angle), 0, 2);
+
+	rotate_mat4.set_value(arbitrary_axis.get_a2() * arbitrary_axis.get_a1() * c + arbitrary_axis.get_a3() * sin(angle), 1, 0);
+	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a2(), 2) * c, 1, 1);
+	rotate_mat4.set_value(arbitrary_axis.get_a2() * arbitrary_axis.get_a3() * c - arbitrary_axis.get_a1() * sin(angle), 1, 2);
+
+	rotate_mat4.set_value(arbitrary_axis.get_a3() * arbitrary_axis.get_a1() * c - arbitrary_axis.get_a2() * sin(angle), 2, 0);
+	rotate_mat4.set_value(arbitrary_axis.get_a3() * arbitrary_axis.get_a2() * c + arbitrary_axis.get_a1() * sin(angle), 2, 1);
+	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a3(), 2) * c, 2, 2);
 	rotate_mat4.set_value(1, 3, 3);
 
 	return rotate_mat4 * _vec;
 
 }
 
+mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
+	vec3 camera_direction = (goal_coordinates - camera_position).normal();
+	vec3 camera_right = world_up.vector_product(camera_direction).normal();
+	vec3 up = camera_direction.vector_product(camera_right).normal();
 
-mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& up) {
-	vec3 camera_target = vec3(0.0f, 0.0f, 0.0f);
-	vec3 camera_direction = (camera_position - camera_target).normal();
-	vec3 camera_right = up.vector_product(camera_direction).normal();
-
-	mat4 first_mat;
+	mat4 first_mat(0.0f);
 	first_mat.set_value(camera_right.get_a1(), 0, 0);
 	first_mat.set_value(camera_right.get_a2(), 0, 1);
 	first_mat.set_value(camera_right.get_a3(), 0, 2);
-	first_mat.set_value(0, 0, 3);
+
 	first_mat.set_value(up.get_a1(), 1, 0);
 	first_mat.set_value(up.get_a2(), 1, 1);
 	first_mat.set_value(up.get_a3(), 1, 2);
-	first_mat.set_value(0, 1, 3);
 	first_mat.set_value(camera_direction.get_a1(), 2, 0);
 	first_mat.set_value(camera_direction.get_a2(), 2, 1);
 	first_mat.set_value(camera_direction.get_a3(), 2, 2);
-	first_mat.set_value(0, 2, 3);
-	first_mat.set_value(0, 3, 0);
-	first_mat.set_value(0, 3, 1);
-	first_mat.set_value(0, 3, 2);
-	first_mat.set_value(0, 3, 3);
+	first_mat.set_value(1, 3, 3);
 
-	mat4 second_mat;
+	mat4 second_mat(0.0f);
 
 	second_mat.set_value(1, 0, 0);
 	second_mat.set_value(1, 1, 1);
@@ -282,7 +279,8 @@ mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& up) {
 	second_mat.set_value(-camera_position.get_a2(), 1, 3);
 	second_mat.set_value(-camera_position.get_a3(), 2, 3);
 
-	return first_mat * second_mat;
+	auto res_mat = first_mat * second_mat;
+	return res_mat;
 }
 
 mat4 perspective(float fow, float ratio, float near, float far) {
