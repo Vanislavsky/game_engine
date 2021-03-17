@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cassert>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include"mat3.h"
 #include"vec2.h"
 #include"vec3.h"
@@ -301,8 +304,7 @@ void test_mat2() {
 
         {
             auto res_mat = mat * mat_2;
-            auto glm_res_mat = glm_mat * glm_mat_2;
-            std::cout << res_mat.get_value(0, 0) << " " << glm_res_mat[0][0];
+            auto glm_res_mat = glm_mat_2 * glm_mat;
             assert(res_mat.get_value(0, 0) == glm_res_mat[0][0]);
             assert(res_mat.get_value(0, 1) == glm_res_mat[0][1]);
             assert(res_mat.get_value(1, 0) == glm_res_mat[1][0]);
@@ -310,13 +312,22 @@ void test_mat2() {
         }
 
         {
-            //vec2  vec({ 66, 77 });
-             //glm::vec2 glm_vec(66, 77);
-             //auto res_mat = mat * vec;
-             //auto glm_res_mat = glm_mat * glm_vec;
+            vec2  vec({ 66, 77 });
+            glm::vec2 glm_vec(66, 77);
+            auto res_mat = mat * vec;
+            auto glm_res_mat = glm_vec * glm_mat;
 
-             //assert(res_mat.get_a1() == glm_res_mat.x);
-             //assert(res_mat.get_a2() == glm_res_mat.y);
+             assert(res_mat.get_a1() == glm_res_mat.x);
+             assert(res_mat.get_a2() == glm_res_mat.y);
+        }
+
+        {
+            auto res_mat = mat.transposed_mat2();
+            auto glm_res_mat = glm::transpose(glm_mat);
+            assert(res_mat.get_value(0, 0) == glm_res_mat[0][0]);
+            assert(res_mat.get_value(0, 1) == glm_res_mat[0][1]);
+            assert(res_mat.get_value(1, 0) == glm_res_mat[1][0]);
+            assert(res_mat.get_value(1, 1) == glm_res_mat[1][1]);
         }
     }
 
@@ -334,7 +345,7 @@ void test_mat2() {
 
         {
             auto res_mat = mat + mat_2;
-            auto glm_res_mat = glm_mat + glm_mat_2;
+            auto glm_res_mat = glm_mat_2 + glm_mat;
 
             assert(res_mat.get_value(0, 0) == glm_res_mat[0][0]);
             assert(res_mat.get_value(0, 1) == glm_res_mat[0][1]);
@@ -354,7 +365,7 @@ void test_mat2() {
 
         {
             auto res_mat = mat * mat_2;
-            auto glm_res_mat = glm_mat * glm_mat_2;
+            auto glm_res_mat = glm_mat_2 * glm_mat;
 
             assert(res_mat.get_value(0, 0) == glm_res_mat[0][0]);
             assert(res_mat.get_value(0, 1) == glm_res_mat[0][1]);
@@ -363,14 +374,154 @@ void test_mat2() {
         }
 
         {
-            //vec2  vec({ 66, 77 });
-            //glm::vec2 glm_vec(66, 77);
-            //auto res_mat = mat * vec;
-            //auto glm_res_mat = glm_mat * glm_vec;
+            vec2  vec({ 120.6f, 77.5f });
+            glm::vec2 glm_vec(120.6f, 77.5f );
+            auto res_mat = mat * vec;
+            auto glm_res_mat = glm_vec * glm_mat;
 
-            //assert(res_mat.get_a1() == glm_res_mat.x);
-            //assert(res_mat.get_a2() == glm_res_mat.y);
+            assert(res_mat.get_a1() == glm_res_mat.x);
+            assert(res_mat.get_a2() == glm_res_mat.y);
         }
+
+        {
+            auto res_mat = mat.transposed_mat2();
+            auto glm_res_mat = glm::transpose(glm_mat);
+            assert(res_mat.get_value(0, 0) == glm_res_mat[0][0]);
+            assert(res_mat.get_value(0, 1) == glm_res_mat[0][1]);
+            assert(res_mat.get_value(1, 0) == glm_res_mat[1][0]);
+            assert(res_mat.get_value(1, 1) == glm_res_mat[1][1]);
+        }
+    }
+}
+
+void test_translate() {
+
+    {
+        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+        vec = trans * vec;
+
+        vec4 vec_2(1.0f, 0.0f, 0.0f, 1.0f);
+        vec3 tr_vec({ 1.0f, 1.0f, 0.0f });
+        auto res = translate(vec_2, tr_vec);
+        
+        assert(res.get_a1() == vec.x);
+        assert(res.get_a2() == vec.y);
+        assert(res.get_a3() == vec.z);
+    }
+
+    {
+        glm::vec4 vec(19.0f, 20.0f, 30.0f, 31.0f);
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(11.0f, 13.0f, 70.0f));
+        vec = trans * vec;
+
+        vec4 vec_2(19.0f, 20.0f, 30.0f, 31.0f);
+        vec3 tr_vec({ 11.0f, 13.0f, 70.0f });
+        auto res = translate(vec_2, tr_vec);
+        
+        assert(res.get_a1() == vec.x);
+        assert(res.get_a2() == vec.y);
+        assert(res.get_a3() == vec.z);
+    }
+
+    {
+        glm::vec4 vec(119.0f, 220.0f, 330.0f, 31.0f);
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(141.0f, 3.0f, 740.0f));
+        vec = trans * vec;
+
+        vec4 vec_2(119.0f, 220.0f, 330.0f, 31.0f);
+        vec3 tr_vec({ 141.0f, 3.0f, 740.0f });
+        auto res = translate(vec_2, tr_vec);
+
+        assert(res.get_a1() == vec.x);
+        assert(res.get_a2() == vec.y);
+        assert(res.get_a3() == vec.z);
+    }
+}
+
+void test_scale() {
+    {
+        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+        glm::mat4 trans(1.0f);
+        trans = glm::scale(trans, glm::vec3(1.5f, 1.5f, 0.0f));
+        vec = trans * vec;
+
+        vec4 vec_2(1.0f, 0.0f, 0.0f, 1.0f);
+        vec3 tr_vec({ 1.5f, 1.5f, 0.0f });
+        auto res = scale(vec_2, tr_vec);
+
+        assert(res.get_a1() == vec.x);
+        assert(res.get_a2() == vec.y);
+        assert(res.get_a3() == vec.z);
+    }
+
+    {
+        glm::vec4 vec(19.0f, 20.0f, 30.0f, 31.0f);
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(3.0f, 1.0f, 7.0f));
+        vec = trans * vec;
+
+        vec4 vec_2(19.0f, 20.0f, 30.0f, 31.0f);
+        vec3 tr_vec({ 3.0f, 1.0f, 7.0f });
+        auto res = translate(vec_2, tr_vec);
+
+        assert(res.get_a1() == vec.x);
+        assert(res.get_a2() == vec.y);
+        assert(res.get_a3() == vec.z);
+    }
+
+    {
+        glm::vec4 vec(119.0f, 220.0f, 330.0f, 31.0f);
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(4.0f, 3.0f, 7.0f));
+        vec = trans * vec;
+
+        vec4 vec_2(119.0f, 220.0f, 330.0f, 31.0f);
+        vec3 tr_vec({ 4.0f, 3.0f, 7.0f });
+        auto res = translate(vec_2, tr_vec);
+
+        assert(res.get_a1() == vec.x);
+        assert(res.get_a2() == vec.y);
+        assert(res.get_a3() == vec.z);
+    }
+}
+
+void test_rotate() {
+    {
+        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+        glm::mat4 trans (1.0f);
+        trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 0.0, 1.0));
+        vec = trans * vec;
+
+        vec4 vec_2(1.0f, 0.0f, 0.0f, 1.0f);
+
+        vec3 tr_vec({ 0.0, 0.0, 1.0 });
+        auto res = rotate(vec_2, 90.0f, tr_vec);
+
+        assert(res.get_a1() == vec.x);
+        assert(res.get_a2() == vec.y);
+        assert(res.get_a3() == vec.z);
+
+    }
+
+    {
+        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+        glm::mat4 trans(1.0f);
+        trans = glm::rotate(trans, 60.0f, glm::vec3(0.0, 1.0, 1.0));
+        vec = trans * vec;
+
+        vec4 vec_2(1.0f, 0.0f, 0.0f, 1.0f);
+
+        vec3 tr_vec({ 0.0, 1.0, 1.0 });
+        auto res = rotate(vec_2, 60.0f, tr_vec);
+
+        assert(res.get_a1() == vec.x);
+        assert(res.get_a2() == vec.y);
+        assert(res.get_a3() == vec.z);
+
     }
 }
 
@@ -379,6 +530,10 @@ void test() {
     test_vec3();
     test_vec4();
     test_mat2();
+    test_translate();
+    test_scale();
+    test_rotate();
+    std::cout << "ALL TEST COMPLETED!!!" << std::endl;
 }
 
 int main(int argc, char* argv[]) {

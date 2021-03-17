@@ -3,6 +3,8 @@
 #include<cmath>
 #include<vector>
 
+#define PI 3.14159265 
+
 mat4::mat4() {
 	data.resize(4);
 	for (int i = 0; i < 4; i++)
@@ -207,41 +209,42 @@ mat4 unit_mat4() {
 	return unit_mat4;
 }
 
-mat4 offset_matrix(float x, float y, float z) {
+vec4 translate(vec4& _vec, vec3& translate_vec) {
 	mat4 off_mat4;
-	off_mat4.set_value(1,1,1);
+	off_mat4.set_value(1, 0, 0);
+	off_mat4.set_value(1, 1, 1);
 	off_mat4.set_value(1, 2, 2);
 	off_mat4.set_value(1, 3, 3);
-	off_mat4.set_value(1, 4, 4);
-	off_mat4.set_value(x, 1, 4);
-	off_mat4.set_value(y, 2, 4);
-	off_mat4.set_value(z, 3, 4);
-	return off_mat4;
+	off_mat4.set_value(translate_vec.get_a1(), 0, 3);
+	off_mat4.set_value(translate_vec.get_a2(), 1, 3);
+	off_mat4.set_value(translate_vec.get_a3(), 2, 3);
+	return off_mat4 * _vec;
 }
 
-mat4 zoom_matrix(float s1, float s2, float s3) {
+vec4 scale(vec4& _vec, vec3& scale_vec) {
 	mat4 zoom_mat4;
-	zoom_mat4.set_value(s1, 1, 1);
-	zoom_mat4.set_value(s2, 2, 2);
-	zoom_mat4.set_value(s3, 3, 3);
-	zoom_mat4.set_value(1, 4, 4);
-	return zoom_mat4;
+	zoom_mat4.set_value(scale_vec.get_a1(), 0, 0);
+	zoom_mat4.set_value(scale_vec.get_a2(), 1, 1);
+	zoom_mat4.set_value(scale_vec.get_a3(), 2, 2);
+	zoom_mat4.set_value(1, 3, 3);
+	return zoom_mat4 * _vec;
 }
 
-mat4 rotate_matrix(float angle, vec3& arbitrary_axis) {
+vec4 rotate(vec4& _vec, float angle, vec3& arbitrary_axis) {
 	mat4 rotate_mat4;
-	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a1(), 2) * (1 - cos(angle)), 1, 1);
-	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a2() * (1 - cos(angle)) - arbitrary_axis.get_a3() * sin(angle), 1, 2);
-	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a3() * (1 - cos(angle)) + arbitrary_axis.get_a2() * sin(angle), 1, 3);
-	rotate_mat4.set_value(arbitrary_axis.get_a2() * arbitrary_axis.get_a1() * (1 - cos(angle)) + arbitrary_axis.get_a3() * sin(angle), 2, 1);
-	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a2(), 2) * (1 - cos(angle)), 2, 2);
-	rotate_mat4.set_value(arbitrary_axis.get_a2() * arbitrary_axis.get_a3() * (1 - cos(angle)) - arbitrary_axis.get_a1() * sin(angle), 2, 3);
-	rotate_mat4.set_value(arbitrary_axis.get_a3() * arbitrary_axis.get_a1() * (1 - cos(angle)) - arbitrary_axis.get_a2() * sin(angle), 3, 1);
-	rotate_mat4.set_value(arbitrary_axis.get_a3() * arbitrary_axis.get_a2() * (1 - cos(angle)) + arbitrary_axis.get_a1() * sin(angle), 3, 2);
-	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a3(), 2) * (1 - cos(angle)), 3, 3);
-	rotate_mat4.set_value(1, 4, 4);
 
-	return rotate_mat4;
+	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a1(), 2) * (1 - cos(angle)), 0, 0);
+	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a2() * (1 - cos(angle)) - arbitrary_axis.get_a3() * sin(angle), 0, 1);
+	rotate_mat4.set_value(arbitrary_axis.get_a1() * arbitrary_axis.get_a3() * (1 - cos(angle)) + arbitrary_axis.get_a2() * sin(angle), 0, 2);
+	rotate_mat4.set_value(arbitrary_axis.get_a2() * arbitrary_axis.get_a1() * (1 - cos(angle)) + arbitrary_axis.get_a3() * sin(angle), 1, 0);
+	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a2(), 2) * (1 - cos(angle)), 1, 1);
+	rotate_mat4.set_value(arbitrary_axis.get_a2() * arbitrary_axis.get_a3() * (1 - cos(angle)) - arbitrary_axis.get_a1() * sin(angle), 1, 2);
+	rotate_mat4.set_value(arbitrary_axis.get_a3() * arbitrary_axis.get_a1() * (1 - cos(angle)) - arbitrary_axis.get_a2() * sin(angle), 2, 0);
+	rotate_mat4.set_value(arbitrary_axis.get_a3() * arbitrary_axis.get_a2() * (1 - cos(angle)) + arbitrary_axis.get_a1() * sin(angle), 2, 1);
+	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a3(), 2) * (1 - cos(angle)), 2, 2);
+	rotate_mat4.set_value(1, 3, 3);
+
+	return rotate_mat4 * _vec;
 
 }
 

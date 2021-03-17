@@ -39,9 +39,9 @@ private:
 
 
 mat4 unit_mat4();
-mat4 offset_matrix(float, float, float);
-mat4 zoom_matrix(float, float, float);
-mat4 rotate_matrix(float, const vec3&);
+vec4 translate(vec4&, vec3&);
+vec4 scale(vec4&, vec3&);
+vec4 rotate(vec4&, float, vec3&);
 
 mat4 look_at(vec3&, vec3&, vec3&);
 mat4 perspective(float, float, float, float);
