@@ -64,6 +64,10 @@ void mat4::set_value(float value, int row, int col) {
 		data[row][col] = value;
 }
 
+float& mat4::operator()(size_t i, size_t j) {
+	return data[i][j];
+}
+
 mat4 mat4::operator+(const mat4& _mat) {
 	mat4 res_mat;
 	for (int i = 0; i < 4; i++) {
@@ -209,7 +213,7 @@ mat4 unit_mat4() {
 	return unit_mat4;
 }
 
-vec4 translate(vec4& _vec, vec3& translate_vec) {
+mat4 translate(vec3& translate_vec) {
 	mat4 off_mat4;
 	off_mat4.set_value(1, 0, 0);
 	off_mat4.set_value(1, 1, 1);
@@ -218,19 +222,19 @@ vec4 translate(vec4& _vec, vec3& translate_vec) {
 	off_mat4.set_value(translate_vec.get_a1(), 0, 3);
 	off_mat4.set_value(translate_vec.get_a2(), 1, 3);
 	off_mat4.set_value(translate_vec.get_a3(), 2, 3);
-	return off_mat4 * _vec;
+	return off_mat4;
 }
 
-vec4 scale(vec4& _vec, vec3& scale_vec) {
+mat4 scale(vec3& scale_vec) {
 	mat4 zoom_mat4;
 	zoom_mat4.set_value(scale_vec.get_a1(), 0, 0);
 	zoom_mat4.set_value(scale_vec.get_a2(), 1, 1);
 	zoom_mat4.set_value(scale_vec.get_a3(), 2, 2);
 	zoom_mat4.set_value(1, 3, 3);
-	return zoom_mat4 * _vec;
+	return zoom_mat4;
 }
 
-vec4 rotate(vec4& _vec, float angle, vec3& arbitrary_axis) {
+mat4 rotate(float angle, vec3& arbitrary_axis) {
 	mat4 rotate_mat4;
 
 	auto c = (1 - cos(angle));
@@ -247,14 +251,22 @@ vec4 rotate(vec4& _vec, float angle, vec3& arbitrary_axis) {
 	rotate_mat4.set_value(cos(angle) + pow(arbitrary_axis.get_a3(), 2) * c, 2, 2);
 	rotate_mat4.set_value(1, 3, 3);
 
-	return rotate_mat4 * _vec;
+	return rotate_mat4;
 
 }
 
 mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
-	vec3 camera_direction = (goal_coordinates - camera_position).normal();
-	vec3 camera_right = world_up.vector_product(camera_direction).normal();
-	vec3 up = camera_direction.vector_product(camera_right).normal();
+	//vec3 camera_direction = (camera_position - goal_coordinates).normal();
+	//vec3 up = world_up.normal();
+	//vec3 camera_right = camera_direction.vector_product(up).normal();
+	//up = camera_right.vector_product(camera_direction);
+	//vec3 camera_right = world_up.vector_product(camera_direction).normal();
+	//vec3 up = camera_direction.vector_product(camera_right).normal();
+
+	vec3 camera_direction = (camera_position - goal_coordinates).normal();
+	vec3 up = world_up;
+	vec3 camera_right = up.vector_product(camera_direction).normal();
+	up = camera_direction.vector_product(camera_right).normal();
 
 	mat4 first_mat(0.0f);
 	first_mat.set_value(camera_right.get_a1(), 0, 0);
@@ -267,6 +279,10 @@ mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
 	first_mat.set_value(camera_direction.get_a1(), 2, 0);
 	first_mat.set_value(camera_direction.get_a2(), 2, 1);
 	first_mat.set_value(camera_direction.get_a3(), 2, 2);
+
+	first_mat.set_value(-camera_position.get_a1(), 3, 0);
+	first_mat.set_value(-camera_position.get_a2(), 3, 1);
+	first_mat.set_value(-camera_position.get_a3(), 3, 2);
 	first_mat.set_value(1, 3, 3);
 
 	mat4 second_mat(0.0f);
@@ -280,7 +296,7 @@ mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
 	second_mat.set_value(-camera_position.get_a3(), 2, 3);
 
 	auto res_mat = first_mat * second_mat;
-	return res_mat;
+	return first_mat;
 }
 
 mat4 perspective(float fow, float ratio, float near, float far) {
