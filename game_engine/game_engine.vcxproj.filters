@@ -81,4 +81,8 @@
       <Filter>math\Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="e4.fs" />
+    <None Include="e4.vs" />
+  </ItemGroup>
 </Project>

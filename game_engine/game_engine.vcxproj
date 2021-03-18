@@ -168,6 +168,10 @@
     <ClInclude Include="vec3.h" />
     <ClInclude Include="vec4.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="e4.fs" />
+    <None Include="e4.vs" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
